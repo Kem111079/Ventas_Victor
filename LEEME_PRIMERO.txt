@@ -1,0 +1,18 @@
+VENTAS DE VÍCTOR · V2.0.1 CONFIGURADA
+======================================
+
+La conexión pública con tu proyecto Supabase ya está colocada.
+
+FALTA HACER SOLO ESTO:
+1. En Supabase abre SQL Editor.
+2. Copia todo el contenido de: supabase/schema.sql
+3. Pégalo en una consulta nueva y pulsa Run.
+4. Crea los tres usuarios en Authentication > Users.
+5. Asigna los roles siguiendo CONFIGURACION_SUPABASE.md.
+6. Extrae este ZIP y sube TODOS los archivos y carpetas a la raíz de:
+   Kem111079/Ventas_Victor
+
+IMPORTANTE:
+- No subas el ZIP cerrado; primero debes extraerlo.
+- No borres datos de la app anterior sin hacer un respaldo JSON.
+- La clave incluida es Publishable; nunca uses service_role o sb_secret_ en GitHub.
