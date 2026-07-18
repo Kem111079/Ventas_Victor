@@ -1,18 +1,29 @@
-VENTAS DE VÍCTOR · V2.0.1 CONFIGURADA
+VENTAS DE VÍCTOR · V2.1
+INFORMES GLOBALES Y RENTABILIDAD SIMPLE
 ======================================
 
-La conexión pública con tu proyecto Supabase ya está colocada.
+Esta versión ya contiene la conexión pública con tu proyecto Supabase.
 
-FALTA HACER SOLO ESTO:
-1. En Supabase abre SQL Editor.
-2. Copia todo el contenido de: supabase/schema.sql
-3. Pégalo en una consulta nueva y pulsa Run.
-4. Crea los tres usuarios en Authentication > Users.
-5. Asigna los roles siguiendo CONFIGURACION_SUPABASE.md.
-6. Extrae este ZIP y sube TODOS los archivos y carpetas a la raíz de:
-   Kem111079/Ventas_Victor
+PARA ACTUALIZAR:
+1. Haz un respaldo JSON desde la app actual.
+2. Extrae este ZIP.
+3. En GitHub abre: Kem111079/Ventas_Victor
+4. Usa Add file > Upload files.
+5. Sube TODOS los archivos y carpetas extraídos.
+6. Confirma reemplazar los archivos existentes.
+7. Espera que GitHub Pages publique la actualización.
+8. Cierra y abre nuevamente la app en los tres teléfonos.
 
-IMPORTANTE:
-- No subas el ZIP cerrado; primero debes extraerlo.
-- No borres datos de la app anterior sin hacer un respaldo JSON.
-- La clave incluida es Publishable; nunca uses service_role o sb_secret_ en GitHub.
+NO DEBES:
+- Subir el ZIP cerrado.
+- Borrar datos antes de hacer respaldo.
+- Cambiar supabase-config.js.
+- Compartir claves secretas de Supabase.
+
+NUEVAS FUNCIONES:
+- Todos los trabajadores funciona como consolidado global.
+- Estado de resultados estimado.
+- Flujo de caja.
+- Gastos y egresos.
+- Precio de compra y margen bruto.
+- Excel financiero completo.

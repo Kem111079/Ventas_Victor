@@ -1,14 +1,16 @@
 Ventas de Víctor PWA Multiusuario
-Versión 2.0.1 · Supabase configurado
+Versión 2.1.0 · Informes globales y rentabilidad simple
 Fecha de compilación: 2026-07-18
 Proyecto Supabase: dswrzzkrnizobhvnsxjh
 
-Características principales:
-- Supabase Auth + sincronización Realtime entre usuarios.
-- Respaldo local y sincronización al recuperar internet.
-- Roles administrador, vendedor y consulta.
-- Edición con comparación antes/después y motivo obligatorio.
-- Anulación reversible en lugar de eliminación física.
-- Carrito de varios productos por comprobante.
-- Límites de crédito, antigüedad de cartera e inventario básico.
-- Cierre diario de caja y comprobantes compartibles.
+Mejoras principales:
+- Corrección del filtro “Todos los trabajadores”.
+- Libro global de movimientos por período.
+- Precio de compra / costo unitario y margen histórico por venta.
+- Registro, edición, anulación y restauración de gastos y egresos.
+- Estado de resultados estimado para no financieros.
+- Flujo de caja separado de la utilidad.
+- Compras de inventario tratadas como salida de caja sin doble conteo en gastos.
+- Exportación financiera a Excel con ventas, costos, margen, gastos y saldos.
+- Sincronización multiusuario de gastos y mejoras financieras.
+- Corrección SQL de la referencia ambigua a la columna version.

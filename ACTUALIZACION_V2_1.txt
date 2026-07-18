@@ -1,0 +1,15 @@
+ACTUALIZACIÓN V2.0.1 → V2.1
+===========================
+
+1. Antes de subir la versión, descarga un respaldo JSON.
+2. Sube todos los archivos de este paquete a la raíz del repositorio.
+3. No necesitas borrar ni restaurar la base de datos.
+4. Los movimientos existentes se conservan.
+5. Las ventas anteriores sin precio de compra mostrarán una advertencia de costo faltante.
+6. Completa el precio de compra de cada producto desde Más > Productos.
+7. Registra los egresos desde Más > Gastos y egresos.
+8. Los estados financieros se consultan en Informes > Resultados y Flujo de caja.
+
+SQL:
+- Si la sincronización ya funciona y no aparece el error “version is ambiguous”, no ejecutes nada.
+- Si vuelve a aparecer ese error, ejecuta PARCHE_SQL_SINCRONIZACION_V2_1.sql en Supabase SQL Editor.

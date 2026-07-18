@@ -1,6 +1,6 @@
-const CACHE_NAME='ventas-victor-v2.0.1-config';
+const CACHE_NAME='ventas-victor-v2.1.0-finanzas';
 const APP_SHELL=[
- './','./index.html','./manifest.webmanifest','./supabase-config.js','./app-v2.js',
+ './','./index.html','./manifest.webmanifest','./supabase-config.js','./app-v2.js','./app-v2.1.js',
  './assets/vendor/supabase.min.js','./assets/icons/icon-192.png','./assets/icons/icon-512.png',
  './assets/icons/apple-touch-icon.png','./assets/icons/favicon-64.png','./assets/icons/favicon-32.png',
  './assets/logo-ventas-de-victor.png'

@@ -1,19 +1,20 @@
-Ventas de Víctor PWA Multiusuario V2.0.0
-
-ARCHIVOS PARA SUBIR COMPLETOS A GITHUB
-
-- index.html
-- 404.html
-- app-v2.js
-- supabase-config.js
-- manifest.webmanifest
-- service-worker.js
-- README.md
-- CONFIGURACION_SUPABASE.md
-- VERSION.txt
-- .nojekyll
-- .github/workflows/deploy-pages.yml
-- supabase/schema.sql
-- assets/icons/*
-- assets/logo-ventas-de-victor.png
-- assets/vendor/supabase.min.js
+ARCHIVOS DE VENTAS DE VÍCTOR V2.1
+================================
+index.html
+404.html
+app-v2.js
+app-v2.1.js
+supabase-config.js
+service-worker.js
+manifest.webmanifest
+VERSION.txt
+README.md
+LEEME_PRIMERO.txt
+ACTUALIZACION_V2_1.txt
+EJECUTAR_EN_SUPABASE.sql
+PARCHE_SQL_SINCRONIZACION_V2_1.sql
+CONFIGURACION_SUPABASE.md
+.nojekyll
+.github/workflows/deploy-pages.yml
+assets/
+supabase/schema.sql

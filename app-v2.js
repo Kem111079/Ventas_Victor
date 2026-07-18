@@ -2,12 +2,12 @@
 'use strict';
 
 (() => {
-  const VV2_VERSION = '2.0.0';
+  const VV2_VERSION = '2.1.0';
   const STORAGE_CONFIG = 'vv_supabase_override_v2';
   const STORAGE_META = 'vv_cloud_meta_v2';
   const DEVICE_KEY = 'vv_device_id_v2';
   const OFFLINE_PREFIX = 'OF';
-  const ENTITY_KEYS = ['workers', 'products', 'sales', 'payments', 'adjustments', 'cashClosings', 'auditLog'];
+  const ENTITY_KEYS = ['workers', 'products', 'sales', 'payments', 'adjustments', 'expenses', 'cashClosings', 'auditLog'];
 
   let base = {};
   let booted = false;
@@ -278,10 +278,11 @@
 
   function enhancedNormalize() {
     if (base.normalize) base.normalize();
+    state.expenses = Array.isArray(state.expenses) ? state.expenses : [];
     state.cashClosings = Array.isArray(state.cashClosings) ? state.cashClosings : [];
     state.settings = { currency: 'C$', defaultPaymentTermDays: 15, ...(state.settings || {}) };
-    state.counters = { sale: 0, payment: 0, adjustment: 0, offline: 0, ...(state.counters || {}) };
-    state.version = 6;
+    state.counters = { sale: 0, payment: 0, adjustment: 0, expense: 0, offline: 0, ...(state.counters || {}) };
+    state.version = 7;
 
     const workerByName = new Map();
     state.workers.forEach((worker) => {
@@ -342,6 +343,24 @@
       adjustment.updatedAt = adjustment.updatedAt || adjustment.createdAt || nowISO();
     });
 
+    state.expenses.forEach((expense) => {
+      expense.id = expense.id || uid('g');
+      expense.docNo = expense.docNo || '';
+      expense.date = expense.date || today();
+      expense.category = expense.category || 'Otros gastos';
+      expense.description = expense.description || expense.concept || 'Gasto';
+      expense.amount = Number(expense.amount) || 0;
+      expense.method = expense.method || 'Efectivo';
+      expense.reference = expense.reference || '';
+      expense.notes = expense.notes || '';
+      expense.affectsResult = expense.affectsResult !== false && normText(expense.category) !== 'compra de mercaderia / inventario';
+      expense.status = expense.status || (expense.voided ? 'voided' : 'active');
+      expense.createdAt = expense.createdAt || expense.updatedAt || nowISO();
+      expense.updatedAt = expense.updatedAt || expense.createdAt;
+      expense.createdBy = expense.createdBy || '';
+      expense.createdByName = expense.createdByName || '';
+    });
+
     state.cashClosings.forEach((closing) => {
       closing.id = closing.id || uid('cc');
       closing.status = closing.status || 'active';
@@ -357,6 +376,7 @@
     state.counters.sale = Math.max(Number(state.counters.sale) || 0, maxDocNumber('V', state.sales));
     state.counters.payment = Math.max(Number(state.counters.payment) || 0, maxDocNumber('A', state.payments));
     state.counters.adjustment = Math.max(Number(state.counters.adjustment) || 0, maxDocNumber('AJ', state.adjustments));
+    state.counters.expense = Math.max(Number(state.counters.expense) || 0, maxDocNumber('G', state.expenses));
   }
 
   function maxDocNumber(prefix, arr) {
@@ -471,7 +491,7 @@
     const remote = cloneV2(remoteState || {});
     const local = cloneV2(localState || {});
     const merged = cloneV2(remote);
-    ['workers', 'products', 'sales', 'payments', 'adjustments', 'cashClosings'].forEach((key) => {
+    ['workers', 'products', 'sales', 'payments', 'adjustments', 'expenses', 'cashClosings'].forEach((key) => {
       merged[key] = mergeArray(remote[key], local[key]);
     });
     merged.auditLog = mergeArray(remote.auditLog, local.auditLog);
@@ -479,13 +499,14 @@
       sale: Math.max(Number(remote.counters?.sale) || 0, Number(local.counters?.sale) || 0),
       payment: Math.max(Number(remote.counters?.payment) || 0, Number(local.counters?.payment) || 0),
       adjustment: Math.max(Number(remote.counters?.adjustment) || 0, Number(local.counters?.adjustment) || 0),
+      expense: Math.max(Number(remote.counters?.expense) || 0, Number(local.counters?.expense) || 0),
       offline: Math.max(Number(remote.counters?.offline) || 0, Number(local.counters?.offline) || 0)
     };
     const localNewer = String(local.updatedAt || '') >= String(remote.updatedAt || '');
     merged.settings = { ...(remote.settings || {}), ...((localNewer && local.settings) || {}) };
     merged.updatedAt = [remote.updatedAt, local.updatedAt].filter(Boolean).sort().pop() || nowISO();
     merged.updatedBy = localNewer ? local.updatedBy : remote.updatedBy;
-    merged.version = Math.max(Number(remote.version) || 0, Number(local.version) || 0, 6);
+    merged.version = Math.max(Number(remote.version) || 0, Number(local.version) || 0, 7);
     return merged;
   }
 
@@ -596,7 +617,7 @@
         await syncStateToCloud();
         return;
       }
-      const localHasData = (state.sales?.length || 0) + (state.payments?.length || 0) + (state.adjustments?.length || 0) > 0;
+      const localHasData = (state.sales?.length || 0) + (state.payments?.length || 0) + (state.adjustments?.length || 0) + (state.expenses?.length || 0) > 0;
       const hasUnsyncedLocal = pendingCloudSave || (cloudVersion === 0 && localHasData);
       cloudVersion = Number(remote.version) || 0;
       cloudUpdatedAt = remote.updated_at || '';
@@ -980,15 +1001,17 @@
   }
 
   function withActiveState(callback) {
-    const original = { sales: state.sales, payments: state.payments, adjustments: state.adjustments };
+    const original = { sales: state.sales, payments: state.payments, adjustments: state.adjustments, expenses: state.expenses };
     state.sales = activeRecords(state.sales);
     state.payments = activeRecords(state.payments);
     state.adjustments = activeRecords(state.adjustments);
+    state.expenses = activeRecords(state.expenses);
     try { return callback(); }
     finally {
       state.sales = original.sales;
       state.payments = original.payments;
       state.adjustments = original.adjustments;
+      state.expenses = original.expenses;
     }
   }
 
@@ -1082,7 +1105,7 @@
   }
 
   function enhancedNextDoc(prefix) {
-    const map = { V: 'sale', A: 'payment', AJ: 'adjustment' };
+    const map = { V: 'sale', A: 'payment', AJ: 'adjustment', G: 'expense' };
     const current = Number(state.counters?.[map[prefix]]) || 0;
     return `${prefix}-${String(current + 1).padStart(4, '0')}`;
   }
@@ -1852,7 +1875,7 @@
   function backupPayload() {
     return {
       backupSchema: 'ventas-victor-v2',
-      backupVersion: 2,
+      backupVersion: 3,
       generatedAt: nowISO(),
       generatedBy: currentIdentity(),
       appVersion: VV2_VERSION,
@@ -1874,17 +1897,21 @@
   function validateBackupData(data) {
     const candidate = data?.state && data?.backupSchema ? data.state : data;
     if (!candidate || typeof candidate !== 'object') throw new Error('El archivo no contiene una base de datos válida.');
-    for (const key of ['workers', 'products', 'sales', 'payments', 'adjustments']) {
+    candidate.expenses = Array.isArray(candidate.expenses) ? candidate.expenses : [];
+    for (const key of ['workers', 'products', 'sales', 'payments', 'adjustments', 'expenses']) {
       if (!Array.isArray(candidate[key])) throw new Error(`Falta la colección obligatoria: ${key}.`);
     }
     if (!candidate.settings || typeof candidate.settings !== 'object') throw new Error('Falta la configuración del negocio.');
-    const tooMany = ['workers','products','sales','payments','adjustments'].some((key) => candidate[key].length > 500000);
+    const tooMany = ['workers','products','sales','payments','adjustments','expenses'].some((key) => candidate[key].length > 500000);
     if (tooMany) throw new Error('El respaldo excede el tamaño razonable permitido.');
     candidate.sales.forEach((x, i) => {
       if (!x.date || !x.worker || !x.product || Number(x.qty) < 0 || Number(x.price) < 0) throw new Error(`Venta inválida en la posición ${i + 1}.`);
     });
     candidate.payments.forEach((x, i) => {
       if (!x.date || !x.worker || Number(x.amount) < 0) throw new Error(`Abono inválido en la posición ${i + 1}.`);
+    });
+    candidate.expenses.forEach((x, i) => {
+      if (!x.date || !x.description || Number(x.amount) < 0) throw new Error(`Gasto inválido en la posición ${i + 1}.`);
     });
     return cloneV2(candidate);
   }
@@ -1897,7 +1924,7 @@
     reader.onload = async () => {
       try {
         const candidate = validateBackupData(JSON.parse(reader.result));
-        const counts = `${candidate.sales.length} ventas · ${candidate.payments.length} abonos · ${candidate.adjustments.length} ajustes`;
+        const counts = `${candidate.sales.length} ventas · ${candidate.payments.length} abonos · ${candidate.adjustments.length} ajustes · ${candidate.expenses.length} gastos`;
         const ok = await enhancedAskConfirmation({
           title: 'Restaurar respaldo', heading: 'Reemplazar la base compartida',
           message: 'Antes de restaurar se descargará automáticamente una copia de seguridad del estado actual. En modo nube, el respaldo restaurado se sincronizará con los demás usuarios.',
@@ -1906,10 +1933,10 @@
         });
         if (!ok) return;
         downloadCurrentBackup('Respaldo_Antes_Restaurar');
-        const beforeInfo = { sales: state.sales.length, payments: state.payments.length, adjustments: state.adjustments.length, updatedAt: state.updatedAt };
+        const beforeInfo = { sales: state.sales.length, payments: state.payments.length, adjustments: state.adjustments.length, expenses: state.expenses.length, updatedAt: state.updatedAt };
         state = candidate;
         enhancedNormalize();
-        enhancedAudit('Restauración', 'Base de datos', file.name, 'Respaldo restaurado', beforeInfo, { sales: state.sales.length, payments: state.payments.length, adjustments: state.adjustments.length });
+        enhancedAudit('Restauración', 'Base de datos', file.name, 'Respaldo restaurado', beforeInfo, { sales: state.sales.length, payments: state.payments.length, adjustments: state.adjustments.length, expenses: state.expenses.length });
         pendingCloudSave = true;
         await enhancedSave();
         initDates();
@@ -1926,32 +1953,33 @@
 
   async function enhancedClearTransactions() {
     if (!can('clear')) return deny('Solo el administrador puede eliminar movimientos de prueba.');
-    const total = state.sales.length + state.payments.length + state.adjustments.length;
+    const total = state.sales.length + state.payments.length + state.adjustments.length + state.expenses.length;
     if (!total) return toast('No hay movimientos para limpiar');
     const ok = await enhancedAskConfirmation({
       title: 'Limpiar movimientos de prueba', heading: `Retirar ${total} movimientos`,
       message: 'Se descargará un respaldo automático antes de limpiar. Trabajadores, productos y configuración se conservarán.',
-      detail: `${state.sales.length} ventas · ${state.payments.length} abonos · ${state.adjustments.length} ajustes`,
+      detail: `${state.sales.length} ventas · ${state.payments.length} abonos · ${state.adjustments.length} ajustes · ${state.expenses.length} gastos`,
       confirmText: 'Limpiar movimientos', danger: true, requiredWord: 'BORRAR', requireReason: true
     });
     if (!ok) return;
     downloadCurrentBackup('Respaldo_Antes_Limpieza');
-    const before = { sales: state.sales.length, payments: state.payments.length, adjustments: state.adjustments.length };
+    const before = { sales: state.sales.length, payments: state.payments.length, adjustments: state.adjustments.length, expenses: state.expenses.length };
     state.sales = [];
     state.payments = [];
     state.adjustments = [];
+    state.expenses = [];
     state.cashClosings = [];
-    enhancedAudit('Limpieza', 'Base de datos', '', 'Movimientos de prueba eliminados después de respaldo automático', before, { sales: 0, payments: 0, adjustments: 0 });
+    enhancedAudit('Limpieza', 'Base de datos', '', 'Movimientos de prueba eliminados después de respaldo automático', before, { sales: 0, payments: 0, adjustments: 0, expenses: 0 });
     await enhancedSave();
     refreshAll();
     toast('Movimientos limpiados; respaldo descargado');
   }
 
   function enhancedRenderMaintenanceCount() {
-    const active = activeRecords(state.sales).length + activeRecords(state.payments).length + activeRecords(state.adjustments).length;
-    const voided = (state.sales.length + state.payments.length + state.adjustments.length) - active;
+    const active = activeRecords(state.sales).length + activeRecords(state.payments).length + activeRecords(state.adjustments).length + activeRecords(state.expenses).length;
+    const voided = (state.sales.length + state.payments.length + state.adjustments.length + state.expenses.length) - active;
     const el = document.getElementById('maintenanceCount');
-    if (el) el.textContent = `${active} movimientos activos · ${voided} anulados · ${state.cashClosings.length} cierres de caja`;
+    if (el) el.textContent = `${active} movimientos activos · ${voided} anulados · ${state.expenses.length} gastos registrados · ${state.cashClosings.length} cierres de caja`;
   }
 
   function enhancedExportXLSX() {
@@ -2110,6 +2138,10 @@
       vv2OpenCashClosing,
       vv2PrintReceipt,
       vv2ShareReceipt,
+      vv2AllocateDocument: allocateDocument,
+      vv2CurrentIdentity: currentIdentity,
+      vv2IsActive: isActive,
+      vv2ActiveRecords: activeRecords,
       editSale: enhancedEditSale,
       deleteSale: enhancedVoidSale,
       editPayment: enhancedEditPayment,

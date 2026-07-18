@@ -2,7 +2,7 @@
   "id": "./",
   "name": "Ventas de Víctor - Control de Ventas",
   "short_name": "Ventas VV",
-  "description": "Registro de ventas, créditos, abonos, saldos, estados de cuenta e informes.",
+  "description": "Ventas, costos, margen, gastos, flujo de caja, cuentas por cobrar e informes financieros sencillos.",
   "lang": "es-NI",
   "dir": "ltr",
   "start_url": "./",

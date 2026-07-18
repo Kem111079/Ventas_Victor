@@ -1,93 +1,62 @@
-# Ventas de Víctor · PWA Multiusuario V2
+# Ventas de Víctor · PWA Multiusuario V2.1
 
-Aplicación web instalable para ventas de una PYME, preparada para trabajar desde teléfonos y computadoras, compartir datos entre varios usuarios y seguir funcionando temporalmente sin conexión.
+Aplicación sencilla para controlar ventas, créditos, abonos, gastos, rentabilidad y flujo de caja de un pequeño negocio. Está diseñada para usuarios no contadores y para trabajar desde teléfonos o computadoras con una base compartida en Supabase.
 
-## Principales mejoras incluidas
+## Novedades de la V2.1
 
-- Sincronización entre los tres usuarios mediante Supabase.
-- Inicio de sesión individual y roles: administrador, vendedor y consulta.
-- Actualización automática de registros mediante Supabase Realtime.
-- Respaldo local en IndexedDB/localStorage y sincronización pendiente cuando regresa internet.
-- Carrito para varios productos dentro de un solo comprobante.
-- Edición con comparación **antes/después** y motivo obligatorio.
-- Anulación reversible en lugar de eliminación física.
-- Auditoría con usuario, fecha, dispositivo, motivo y datos modificados.
-- Numeración centralizada cuando existe conexión y numeración offline única por dispositivo.
-- Relaciones por ID permanente para evitar romper historiales al cambiar nombres.
-- Validación de nombres duplicados.
-- Límite de crédito y plazo por trabajador.
-- Antigüedad de cartera: 0–7, 8–15, 16–30 y más de 30 días.
-- Inventario básico, costo, margen y alertas de existencia mínima.
-- Cierre diario de caja.
-- Comprobantes de venta y abono para imprimir, guardar como PDF o compartir.
-- Respaldo automático antes de restaurar o limpiar movimientos.
+- Corrección del filtro **Todos los trabajadores**.
+- Informe global de movimientos por período.
+- Precio de compra o costo unitario por producto.
+- Costo histórico y margen bruto guardados en cada venta.
+- Registro, edición, anulación y restauración de gastos.
+- Estado de resultados estimado.
+- Flujo de caja separado de la utilidad.
+- Compras de inventario tratadas como salida de caja sin doble conteo en resultados.
+- Exportación financiera completa a Excel.
+- Sincronización multiusuario de gastos y resultados.
+- Corrección de la función SQL `vv_save_state` para evitar el error de columna `version` ambigua.
 
-## Estructura técnica
+## Informes disponibles
 
-- **GitHub Pages:** publica la interfaz de la aplicación.
-- **Supabase Auth:** autentica a los usuarios.
-- **Supabase PostgreSQL:** mantiene el estado central compartido.
-- **Supabase Realtime:** avisa a los demás dispositivos cuando hay cambios.
-- **IndexedDB/localStorage:** conserva una copia local y permite continuar temporalmente sin conexión.
+1. **Resumen:** ventas, cobros, costo, margen, gastos y resultado estimado.
+2. **Movimientos:** ventas, abonos, ajustes y gastos en un solo libro global.
+3. **Resultados:** ventas netas, costo de lo vendido, margen bruto, gastos y resultado neto estimado.
+4. **Flujo de caja:** entradas cobradas, salidas pagadas y flujo neto.
+5. **Estado de cuenta:** detalle individual por trabajador.
 
+## Tratamiento sencillo de compras y gastos
 
-## Estado de esta entrega
+- El **precio de compra** de cada producto se guarda en el catálogo.
+- Cuando se registra una venta, ese costo se conserva en la venta para no alterar el margen histórico.
+- Los gastos operativos reducen el resultado estimado.
+- Las compras de mercadería o inventario se muestran como salida de caja, pero no se vuelven a restar como gasto operativo porque el costo se reconoce al vender el producto.
 
-La URL y la **Publishable key** del proyecto `ventas-victor` ya están colocadas en `supabase-config.js`. No es necesario editar ese archivo. Todavía debe ejecutar `supabase/schema.sql` en el SQL Editor y crear/asignar los tres usuarios antes de operar en modo compartido.
+## Actualización desde V2.0.1
 
-## Configuración inicial resumida
+1. Descargue un respaldo JSON desde la app actual.
+2. Extraiga el ZIP V2.1.
+3. Suba todos los archivos y carpetas a la raíz de `Kem111079/Ventas_Victor`.
+4. Reemplace los archivos existentes cuando GitHub lo solicite.
+5. Espere la publicación de GitHub Pages.
+6. Cierre completamente la PWA en cada teléfono y vuelva a abrirla.
+7. Verifique que aparezca la pestaña **Resultados** en Informes.
 
-1. Cree un proyecto nuevo en Supabase.
-2. Abra **SQL Editor** y ejecute completo `supabase/schema.sql`.
-3. Cree los tres usuarios en **Authentication → Users**.
-4. Asigne cada usuario al negocio usando las instrucciones de `CONFIGURACION_SUPABASE.md`.
-5. La **Project URL** y la **Publishable key** ya están configuradas.
-6. Suba todo el contenido de esta carpeta al repositorio de GitHub.
-7. Active o verifique GitHub Pages.
-8. Abra la dirección publicada e ingrese con cada cuenta.
-
-> Nunca coloque la clave `service_role` o una secret key dentro de GitHub o del navegador. La app utiliza únicamente la clave pública junto con autenticación y políticas RLS.
-
-## Publicación en GitHub Pages
-
-1. Cree un repositorio nuevo.
-2. Suba todos los archivos y carpetas de este ZIP sin cambiar la estructura.
-3. Verifique que la rama principal sea `main`.
-4. Entre a **Settings → Pages**.
-5. En **Build and deployment → Source**, seleccione **GitHub Actions**.
-6. Espere que la acción **Publicar Ventas de Víctor** finalice correctamente.
-
-## Orden recomendado para migrar los datos existentes
-
-1. Haga un respaldo JSON desde el dispositivo que contiene la información maestra.
-2. Configure Supabase y publique la nueva versión.
-3. Inicie sesión primero desde el dispositivo maestro.
-4. Verifique que los registros aparezcan y que el indicador muestre **Sincronizado**.
-5. Luego permita el ingreso de los otros dos usuarios.
-6. Evite restaurar respaldos diferentes desde varios dispositivos, porque podrían mezclarse registros duplicados.
-
-## Roles
-
-| Rol | Registrar ventas/abonos | Editar propios | Anular | Catálogos/configuración | Consultar/exportar |
-|---|---:|---:|---:|---:|---:|
-| Administrador | Sí | Sí | Sí | Sí | Sí |
-| Vendedor | Sí | Durante la primera hora | No | No | Sí |
-| Consulta | No | No | No | No | Sí |
+No se requiere crear tablas nuevas en Supabase porque los gastos se guardan dentro del estado JSON compartido. El SQL incluido ya contiene la corrección de sincronización.
 
 ## Archivos principales
 
 - `index.html`: aplicación base.
-- `app-v2.js`: mejoras multiusuario, seguridad, carrito, caja, inventario y auditoría.
-- `supabase-config.js`: configuración pública de conexión.
-- `supabase/schema.sql`: tablas, funciones, RLS, secuencias y Realtime.
-- `CONFIGURACION_SUPABASE.md`: instrucciones detalladas.
-- `service-worker.js`: instalación PWA y funcionamiento sin conexión.
-- `.github/workflows/deploy-pages.yml`: publicación automática en GitHub Pages.
+- `app-v2.js`: sincronización, seguridad, carrito, auditoría e inventario.
+- `app-v2.1.js`: informes globales, gastos, rentabilidad y flujo de caja.
+- `supabase-config.js`: conexión pública con Supabase.
+- `EJECUTAR_EN_SUPABASE.sql`: instalación completa y función corregida.
+- `PARCHE_SQL_SINCRONIZACION_V2_1.sql`: parche corto para corregir únicamente `vv_save_state`.
+- `service-worker.js`: instalación y actualización de la PWA.
 
-## Uso sin conexión
+## Seguridad
 
-Cuando no existe internet, la app guarda el cambio en el teléfono y muestra **Pendiente de sincronizar**. Al recuperar la conexión intenta enviar automáticamente la versión local. Si otro usuario modificó la base durante ese tiempo, la app combina los registros por ID y fecha de actualización antes de volver a guardar.
+La app usa únicamente la `Publishable key`. Nunca coloque en GitHub una clave `service_role`, `sb_secret_...` ni la contraseña de la base de datos.
 
 ## Respaldo recomendado
 
-Aunque exista Supabase, descargue periódicamente un respaldo JSON desde **Más → Guardar respaldo**. El respaldo incluye registros activos, anulados, catálogos, cierres, configuración y auditoría.
+Aunque exista Supabase, descargue periódicamente un respaldo JSON desde **Más → Guardar respaldo**. El respaldo V2.1 incluye gastos, movimientos anulados, productos, trabajadores, cierres de caja, configuración y auditoría.

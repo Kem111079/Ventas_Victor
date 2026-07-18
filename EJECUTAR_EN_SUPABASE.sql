@@ -180,13 +180,13 @@ begin
       raise exception 'VV_CONFLICT:%', v_current using errcode = 'P0001';
     end if;
 
-    update public.business_state
-       set version = version + 1,
+    update public.business_state as bs
+       set version = bs.version + 1,
            state = p_state,
            updated_at = now(),
            updated_by = auth.uid()
-     where business_slug = p_business_slug
-     returning business_state.version, business_state.updated_at
+     where bs.business_slug = p_business_slug
+     returning bs.version, bs.updated_at
        into v_new, v_updated;
   end if;
 
