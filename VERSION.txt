@@ -1,16 +1,20 @@
 Ventas de Víctor PWA Multiusuario
-Versión 2.1.0 · Informes globales y rentabilidad simple
+Versión 2.2.0 · Carga masiva de catálogos e inventario físico
 Fecha de compilación: 2026-07-18
 Proyecto Supabase: dswrzzkrnizobhvnsxjh
 
 Mejoras principales:
-- Corrección del filtro “Todos los trabajadores”.
-- Libro global de movimientos por período.
-- Precio de compra / costo unitario y margen histórico por venta.
-- Registro, edición, anulación y restauración de gastos y egresos.
-- Estado de resultados estimado para no financieros.
-- Flujo de caja separado de la utilidad.
-- Compras de inventario tratadas como salida de caja sin doble conteo en gastos.
-- Exportación financiera a Excel con ventas, costos, margen, gastos y saldos.
-- Sincronización multiusuario de gastos y mejoras financieras.
-- Corrección SQL de la referencia ambigua a la columna version.
+- Plantilla Excel descargable desde la app.
+- Importación masiva de trabajadores y productos.
+- Vista previa antes de aplicar cambios.
+- Identificación segura por código y respaldo por nombre normalizado.
+- Creación de registros nuevos y actualización de registros existentes sin cambiar sus ID.
+- EXISTENCIA_FISICA reemplaza el inventario actual porque representa el conteo físico real.
+- Actualización de precio de compra, precio de venta, categoría y existencia mínima.
+- Conservación completa de precios, costos y márgenes históricos de ventas anteriores.
+- Validación de códigos y nombres duplicados, precios negativos, existencias inválidas y estados incorrectos.
+- Advertencias por venta debajo del costo y existencia igual o menor al mínimo.
+- Respaldo JSON automático antes de confirmar una importación.
+- Auditoría y sincronización multiusuario en una sola operación.
+- Reporte Excel de revisión antes de importar.
+- Incluye todas las mejoras financieras de V2.1.

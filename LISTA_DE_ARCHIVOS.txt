@@ -1,20 +1,26 @@
-ARCHIVOS DE VENTAS DE VÍCTOR V2.1
+ARCHIVOS DE VENTAS DE VÍCTOR V2.2
 ================================
 index.html
 404.html
 app-v2.js
 app-v2.1.js
+app-v2.2.js
 supabase-config.js
 service-worker.js
 manifest.webmanifest
+Plantilla_Carga_Masiva_Ventas_Victor_V2_2.xlsx
 VERSION.txt
 README.md
 LEEME_PRIMERO.txt
 ACTUALIZACION_V2_1.txt
+ACTUALIZACION_V2_2.txt
 EJECUTAR_EN_SUPABASE.sql
 PARCHE_SQL_SINCRONIZACION_V2_1.sql
 CONFIGURACION_SUPABASE.md
 .nojekyll
 .github/workflows/deploy-pages.yml
-assets/
+assets/icons/
+assets/logo-ventas-de-victor.png
+assets/templates/Plantilla_Carga_Masiva_Ventas_Victor_V2_2.xlsx
+assets/vendor/supabase.min.js
 supabase/schema.sql

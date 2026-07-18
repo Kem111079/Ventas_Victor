@@ -1,8 +1,8 @@
-# Configuración de Supabase · Ventas de Víctor V2.1
+# Configuración de Supabase · Ventas de Víctor V2
 
 ## 1. Crear el proyecto
 
-El proyecto Supabase ya está creado y configurado. Esta guía se conserva para futuras reinstalaciones o recuperación.
+Cree un proyecto en Supabase y espere a que la base de datos quede disponible.
 
 ## 2. Crear la estructura
 
@@ -63,14 +63,14 @@ where business_slug = 'ventas-victor'
   and user_id = (select id from auth.users where email = 'consulta@correo.com');
 ```
 
-## 5. Configuración pública de la app
+## 5. Configurar la app
 
 En Supabase abra la configuración del proyecto y copie:
 
 - **Project URL**.
 - **Publishable key** o la clave pública `anon` del proyecto.
 
-El archivo `supabase-config.js` de este paquete ya está completo. En una reinstalación diferente tendría esta estructura:
+Abra `supabase-config.js` y complete:
 
 ```javascript
 window.VV_SUPABASE_CONFIG = {
@@ -122,8 +122,3 @@ Confirme que ambos usuarios usan:
 ### Se cambió la configuración y el teléfono mantiene una versión anterior
 
 Cierre completamente la PWA y vuelva a abrirla. También puede borrar únicamente la caché del sitio, pero genere antes un respaldo JSON.
-
-
-## 10. Actualización V2.1
-
-Los gastos se almacenan dentro del estado JSON compartido; no requieren una tabla adicional. Si la sincronización ya funciona, basta con subir los archivos de la V2.1. Si aparece el error `column reference "version" is ambiguous`, ejecute `PARCHE_SQL_SINCRONIZACION_V2_1.sql`.

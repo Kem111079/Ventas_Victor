@@ -1,29 +1,33 @@
-VENTAS DE VÍCTOR · V2.1
-INFORMES GLOBALES Y RENTABILIDAD SIMPLE
-======================================
+VENTAS DE VÍCTOR · V2.2
+CARGA MASIVA DE CATÁLOGOS E INVENTARIO FÍSICO
+=============================================
 
-Esta versión ya contiene la conexión pública con tu proyecto Supabase.
+Esta versión conserva la conexión actual con Supabase y todas las funciones de V2.1.
 
 PARA ACTUALIZAR:
 1. Haz un respaldo JSON desde la app actual.
 2. Extrae este ZIP.
-3. En GitHub abre: Kem111079/Ventas_Victor
+3. En GitHub abre Kem111079/Ventas_Victor.
 4. Usa Add file > Upload files.
 5. Sube TODOS los archivos y carpetas extraídos.
 6. Confirma reemplazar los archivos existentes.
-7. Espera que GitHub Pages publique la actualización.
-8. Cierra y abre nuevamente la app en los tres teléfonos.
+7. Espera la publicación de GitHub Pages.
+8. Cierra y abre la app en los tres teléfonos.
+
+NUEVA OPCIÓN:
+Más > Carga masiva por Excel
+
+FUNCIONAMIENTO:
+- Descarga la plantilla incluida.
+- Completa trabajadores y productos.
+- El inventario del Excel representa la existencia física y reemplaza el valor de la app.
+- La vista previa muestra qué se creará, actualizará o rechazará.
+- La app crea un respaldo automático antes de importar.
+- Los cambios se sincronizan con los tres usuarios.
+- Las ventas históricas no se recalculan.
 
 NO DEBES:
-- Subir el ZIP cerrado.
-- Borrar datos antes de hacer respaldo.
-- Cambiar supabase-config.js.
+- Subir el ZIP cerrado a GitHub.
+- Cambiar los encabezados de la plantilla.
+- Repetir códigos dentro del Excel.
 - Compartir claves secretas de Supabase.
-
-NUEVAS FUNCIONES:
-- Todos los trabajadores funciona como consolidado global.
-- Estado de resultados estimado.
-- Flujo de caja.
-- Gastos y egresos.
-- Precio de compra y margen bruto.
-- Excel financiero completo.

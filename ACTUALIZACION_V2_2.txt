@@ -1,0 +1,29 @@
+ACTUALIZACIÓN V2.1 → V2.2
+=========================
+
+1. Descarga un respaldo JSON desde la app actual.
+2. Extrae este ZIP.
+3. En GitHub abre el repositorio Kem111079/Ventas_Victor.
+4. Usa Add file > Upload files.
+5. Sube TODOS los archivos y carpetas extraídos, reemplazando los existentes.
+6. Espera que GitHub Pages termine de publicar.
+7. Cierra completamente la app en los tres teléfonos y vuelve a abrirla.
+8. En Más aparecerá “Carga masiva por Excel”.
+
+USO DE LA CARGA MASIVA:
+1. Descarga la plantilla desde la app.
+2. Completa las hojas Trabajadores y Productos.
+3. En Productos, EXISTENCIA_FISICA debe contener el conteo físico real.
+4. Carga el archivo y revisa la vista previa.
+5. Corrige cualquier error indicado.
+6. Escribe IMPORTAR, agrega el motivo y confirma.
+7. La app descargará un respaldo antes de aplicar los cambios.
+
+REGLA PRINCIPAL:
+- EXISTENCIA_FISICA reemplaza el inventario actual; no se suma.
+- Los precios y costos nuevos se aplican a ventas futuras.
+- Las ventas ya registradas conservan precio, costo y margen históricos.
+
+SUPABASE:
+- Esta versión no requiere nuevas tablas ni ejecutar SQL adicional.
+- La importación se sincroniza utilizando el mismo estado compartido ya configurado.
