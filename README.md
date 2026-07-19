@@ -1,3 +1,23 @@
+# Ventas de Víctor · PWA Multiusuario V2.3
+
+Aplicación sencilla para ventas, créditos, abonos, gastos, inventario físico e informes financieros para no financieros.
+
+## Nueva función V2.3: inventario y análisis de rotación
+
+En **Informes → Inventario** se incorporan:
+
+- Unidades disponibles y productos incluidos.
+- Masa monetaria del inventario a precio de compra.
+- Valor potencial de venta y margen potencial.
+- Unidades más vendidas, ingresos y margen generado.
+- Rotación monetaria, rotación en unidades, cobertura y días de inventario.
+- Clasificación ABC de productos.
+- Alertas de productos agotados, bajo mínimo, sin movimiento, exceso y precio inferior al costo.
+- Historial de conteos físicos.
+- Reporte Excel de siete hojas e impresión/PDF.
+
+Cada importación de la plantilla Excel crea un corte histórico. La existencia física reemplaza el saldo actual y nunca recalcula las ventas históricas.
+
 # Ventas de Víctor · PWA Multiusuario V2.2
 
 Aplicación web instalable para ventas de una pequeña empresa, con sincronización entre usuarios, inventario, costos, gastos e informes financieros sencillos para no financieros.

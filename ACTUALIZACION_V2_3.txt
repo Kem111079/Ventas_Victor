@@ -1,0 +1,12 @@
+ACTUALIZACIÓN V2.2 → V2.3
+
+1. Extraiga el contenido del ZIP.
+2. Suba todos los archivos a la raíz del repositorio GitHub y reemplace los existentes.
+3. No ejecute SQL adicional: esta versión utiliza la misma fila compartida business_state.
+4. Cierre la app en los teléfonos y vuelva a abrirla para actualizar la caché.
+5. Entre a Informes → Inventario.
+6. Use el período superior para analizar ventas, rotación y cobertura.
+7. Cada nueva importación Excel guardará un corte histórico del inventario físico.
+
+Regla preservada:
+EXISTENCIA_FISICA reemplaza el saldo actual. Los precios y costos nuevos se aplican solamente a ventas futuras; las ventas anteriores permanecen intactas.

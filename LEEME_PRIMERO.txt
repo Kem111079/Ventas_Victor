@@ -1,33 +1,19 @@
-VENTAS DE VÍCTOR · V2.2
-CARGA MASIVA DE CATÁLOGOS E INVENTARIO FÍSICO
-=============================================
+VENTAS DE VÍCTOR · V2.3
 
-Esta versión conserva la conexión actual con Supabase y todas las funciones de V2.1.
+Esta versión incorpora el reporte ejecutivo de inventario, masa monetaria, rotación y productos más vendidos.
 
 PARA ACTUALIZAR:
-1. Haz un respaldo JSON desde la app actual.
-2. Extrae este ZIP.
-3. En GitHub abre Kem111079/Ventas_Victor.
-4. Usa Add file > Upload files.
-5. Sube TODOS los archivos y carpetas extraídos.
-6. Confirma reemplazar los archivos existentes.
-7. Espera la publicación de GitHub Pages.
-8. Cierra y abre la app en los tres teléfonos.
+1. Descargue y extraiga el ZIP.
+2. Suba su contenido a la raíz de Kem111079/Ventas_Victor.
+3. Reemplace los archivos existentes y confirme el commit.
+4. Espere la publicación de GitHub Pages.
+5. Cierre y vuelva a abrir la app en cada teléfono.
 
-NUEVA OPCIÓN:
-Más > Carga masiva por Excel
+NO ES NECESARIO EJECUTAR SQL ADICIONAL.
 
-FUNCIONAMIENTO:
-- Descarga la plantilla incluida.
-- Completa trabajadores y productos.
-- El inventario del Excel representa la existencia física y reemplaza el valor de la app.
-- La vista previa muestra qué se creará, actualizará o rechazará.
-- La app crea un respaldo automático antes de importar.
-- Los cambios se sincronizan con los tres usuarios.
-- Las ventas históricas no se recalculan.
-
-NO DEBES:
-- Subir el ZIP cerrado a GitHub.
-- Cambiar los encabezados de la plantilla.
-- Repetir códigos dentro del Excel.
-- Compartir claves secretas de Supabase.
+PRUEBA RECOMENDADA:
+- Abra Informes → Inventario.
+- Confirme la masa monetaria del saldo actual.
+- Registre una venta de prueba y verifique que disminuya la existencia y aumenten las unidades vendidas.
+- Importe un conteo físico y confirme que se guarde en Historial de conteos.
+- Exporte el reporte Excel.

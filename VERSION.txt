@@ -1,20 +1,19 @@
 Ventas de Víctor PWA Multiusuario
-Versión 2.2.0 · Carga masiva de catálogos e inventario físico
+Versión 2.3.0 · Inventario, rotación y análisis de ventas
 Fecha de compilación: 2026-07-18
 Proyecto Supabase: dswrzzkrnizobhvnsxjh
 
 Mejoras principales:
-- Plantilla Excel descargable desde la app.
-- Importación masiva de trabajadores y productos.
-- Vista previa antes de aplicar cambios.
-- Identificación segura por código y respaldo por nombre normalizado.
-- Creación de registros nuevos y actualización de registros existentes sin cambiar sus ID.
-- EXISTENCIA_FISICA reemplaza el inventario actual porque representa el conteo físico real.
-- Actualización de precio de compra, precio de venta, categoría y existencia mínima.
-- Conservación completa de precios, costos y márgenes históricos de ventas anteriores.
-- Validación de códigos y nombres duplicados, precios negativos, existencias inválidas y estados incorrectos.
-- Advertencias por venta debajo del costo y existencia igual o menor al mínimo.
-- Respaldo JSON automático antes de confirmar una importación.
-- Auditoría y sincronización multiusuario en una sola operación.
-- Reporte Excel de revisión antes de importar.
-- Incluye todas las mejoras financieras de V2.1.
+- Reporte de inventario visible directamente en la app.
+- Saldos por producto, unidades y masa monetaria a costo.
+- Valor potencial de venta y margen bruto potencial.
+- Unidades vendidas, ingresos, costo histórico y margen por producto.
+- Rotación monetaria y en unidades, cobertura y días de inventario.
+- Ranking de productos más vendidos y de mayor margen generado.
+- Clasificación ABC según participación en ventas.
+- Alertas de agotados, bajo mínimo, sin movimiento, exceso y precio menor al costo.
+- Historial de cortes físicos generado por cada importación Excel.
+- Exportación completa a Excel e impresión/PDF.
+- EXISTENCIA_FISICA continúa reemplazando el inventario actual.
+- Los cambios de precio no alteran ventas, costos ni márgenes históricos.
+- Incluye todas las mejoras de V2.1 y V2.2.

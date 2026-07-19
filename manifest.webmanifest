@@ -2,7 +2,7 @@
   "id": "./",
   "name": "Ventas de Víctor - Control de Ventas",
   "short_name": "Ventas VV",
-  "description": "Ventas, créditos, abonos, inventario, carga masiva Excel e informes financieros multiusuario.",
+  "description": "Ventas, créditos, abonos, inventario, rotación, carga masiva Excel e informes financieros multiusuario.",
   "lang": "es-NI",
   "dir": "ltr",
   "start_url": "./",

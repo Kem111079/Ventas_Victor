@@ -634,7 +634,22 @@
           if (target) Object.assign(target, item.after, { updatedAt:timestamp, updatedBy:identity.userId, updatedByName:identity.userName });
         }
       });
-      state.settings = { ...(state.settings || {}), lastCatalogImport:{ ...summary, importedAt:timestamp, importedBy:identity.userName, appVersion:VV22_VERSION } };
+      state.inventorySnapshots = Array.isArray(state.inventorySnapshots) ? state.inventorySnapshots : [];
+      const inventoryProducts = state.products.map((product) => ({
+        productId:product.id || '', code:product.code || '', name:product.name || '', category:product.category || '',
+        stock:Number(product.stock || 0), cost:Number(product.cost || 0), price:Number(product.price || 0), active:product.active !== false
+      }));
+      const inventorySnapshot = {
+        id:uid('inv'), date:typeof today === 'function' ? today() : new Date().toLocaleDateString('en-CA'),
+        createdAt:timestamp, updatedAt:timestamp, sourceFile:preview22.fileName,
+        importedBy:identity.userName, importedById:identity.userId, appVersion:'2.3.0', products:inventoryProducts,
+        totalUnits:inventoryProducts.reduce((sum,item)=>sum+Number(item.stock || 0),0),
+        totalCost:inventoryProducts.reduce((sum,item)=>sum+Number(item.stock || 0)*Number(item.cost || 0),0),
+        totalSale:inventoryProducts.reduce((sum,item)=>sum+Number(item.stock || 0)*Number(item.price || 0),0)
+      };
+      state.inventorySnapshots.push(inventorySnapshot);
+      if (state.inventorySnapshots.length > 60) state.inventorySnapshots = state.inventorySnapshots.slice(-60);
+      state.settings = { ...(state.settings || {}), lastCatalogImport:{ ...summary, importedAt:timestamp, importedBy:identity.userName, appVersion:'2.3.0' } };
       audit('Importación masiva', 'Catálogos e inventario', preview22.fileName,
         `${summary.workersNew} trabajadores nuevos · ${summary.workersUpdated} actualizados · ${summary.productsNew} productos nuevos · ${summary.productsUpdated} actualizados · ${summary.stocksUpdated} inventarios físicos reemplazados`,
         null, summary);

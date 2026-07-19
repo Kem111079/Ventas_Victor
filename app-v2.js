@@ -2,12 +2,12 @@
 'use strict';
 
 (() => {
-  const VV2_VERSION = '2.2.0';
+  const VV2_VERSION = '2.3.0';
   const STORAGE_CONFIG = 'vv_supabase_override_v2';
   const STORAGE_META = 'vv_cloud_meta_v2';
   const DEVICE_KEY = 'vv_device_id_v2';
   const OFFLINE_PREFIX = 'OF';
-  const ENTITY_KEYS = ['workers', 'products', 'sales', 'payments', 'adjustments', 'expenses', 'cashClosings', 'auditLog'];
+  const ENTITY_KEYS = ['workers', 'products', 'sales', 'payments', 'adjustments', 'expenses', 'cashClosings', 'inventorySnapshots', 'auditLog'];
 
   let base = {};
   let booted = false;
@@ -280,9 +280,10 @@
     if (base.normalize) base.normalize();
     state.expenses = Array.isArray(state.expenses) ? state.expenses : [];
     state.cashClosings = Array.isArray(state.cashClosings) ? state.cashClosings : [];
+    state.inventorySnapshots = Array.isArray(state.inventorySnapshots) ? state.inventorySnapshots : [];
     state.settings = { currency: 'C$', defaultPaymentTermDays: 15, ...(state.settings || {}) };
     state.counters = { sale: 0, payment: 0, adjustment: 0, expense: 0, offline: 0, ...(state.counters || {}) };
-    state.version = 7;
+    state.version = 8;
 
     const workerByName = new Map();
     state.workers.forEach((worker) => {
@@ -491,7 +492,7 @@
     const remote = cloneV2(remoteState || {});
     const local = cloneV2(localState || {});
     const merged = cloneV2(remote);
-    ['workers', 'products', 'sales', 'payments', 'adjustments', 'expenses', 'cashClosings'].forEach((key) => {
+    ['workers', 'products', 'sales', 'payments', 'adjustments', 'expenses', 'cashClosings', 'inventorySnapshots'].forEach((key) => {
       merged[key] = mergeArray(remote[key], local[key]);
     });
     merged.auditLog = mergeArray(remote.auditLog, local.auditLog);
@@ -506,7 +507,7 @@
     merged.settings = { ...(remote.settings || {}), ...((localNewer && local.settings) || {}) };
     merged.updatedAt = [remote.updatedAt, local.updatedAt].filter(Boolean).sort().pop() || nowISO();
     merged.updatedBy = localNewer ? local.updatedBy : remote.updatedBy;
-    merged.version = Math.max(Number(remote.version) || 0, Number(local.version) || 0, 7);
+    merged.version = Math.max(Number(remote.version) || 0, Number(local.version) || 0, 8);
     return merged;
   }
 
