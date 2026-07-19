@@ -372,18 +372,15 @@ async function installApp(){
  if(isiOS){alert('En iPhone o iPad: pulse Compartir y luego “Agregar a pantalla de inicio”.');updateInstallUI('iPhone/iPad: Compartir → Agregar a pantalla de inicio.');}
  else{alert('Abra el menú del navegador y seleccione “Instalar aplicación” o “Agregar a pantalla principal”.');updateInstallUI('Use el menú del navegador para instalar la aplicación.');}
 }
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').then(reg=>{updateInstallUI(window.matchMedia('(display-mode: standalone)').matches?'Aplicación instalada y lista para trabajar sin conexión.':'Aplicación preparada para instalación y uso sin conexión.');reg.addEventListener('updatefound',()=>{const worker=reg.installing;if(worker)worker.addEventListener('statechange',()=>{if(worker.state==='installed'&&navigator.serviceWorker.controller)toast('Nueva versión disponible. Cierre y abra la app para actualizar.')})})}).catch(()=>updateInstallUI('No fue posible activar el modo sin conexión. Verifique que el sitio use HTTPS.')))}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').then(reg=>{updateInstallUI(window.matchMedia('(display-mode: standalone)').matches?'Aplicación instalada y lista para trabajar sin conexión.':'Aplicación preparada para instalación y uso sin conexión.');reg.addEventListener('updatefound',()=>{const worker=reg.installing;if(worker)worker.addEventListener('statechange',()=>{if(worker.state==='installed'&&navigator.serviceWorker.controller){worker.postMessage('SKIP_WAITING');toast('Nueva versión instalada. Se aplicará al recargar la app.')}})})}).catch(()=>updateInstallUI('No fue posible activar el modo sin conexión. Verifique que el sitio use HTTPS.')))}
 window.addEventListener('online',()=>toast('Conexión restablecida'));
 window.addEventListener('offline',()=>toast('Modo sin conexión activo'));
 
 load().then(()=>{const target=new URLSearchParams(location.search).get('go');if(['home','sale','payment','reports','more'].includes(target))go(target)});
 </script>
 
-<script src="assets/vendor/supabase.min.js"></script>
-<script src="supabase-config.js?v=2.3.1"></script>
-<script src="app-v2.js?v=2.3.1"></script>
-<script src="app-v2.1.js?v=2.3.1"></script>
-<script src="app-v2.2.js?v=2.3.1"></script>
-<script src="app-v2.3.js?v=2.3.1"></script>
+<script defer src="assets/vendor/supabase.min.js"></script>
+<script defer src="supabase-config.js?v=2.4.0"></script>
+<script defer src="app-bundle.min.js?v=2.4.0"></script>
 </body>
 </html>

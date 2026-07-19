@@ -1,22 +1,10 @@
 Ventas de Víctor PWA Multiusuario
-Versión 2.3.1 · Recuperación de inventario y selector de productos
+Versión 2.4.0 · Bundle unificado y optimización total
 Fecha de compilación: 2026-07-18
 Proyecto Supabase: dswrzzkrnizobhvnsxjh
 
-Mejoras principales:
-- Reporte de inventario visible directamente en la app.
-- Saldos por producto, unidades y masa monetaria a costo.
-- Valor potencial de venta y margen bruto potencial.
-- Unidades vendidas, ingresos, costo histórico y margen por producto.
-- Rotación monetaria y en unidades, cobertura y días de inventario.
-- Ranking de productos más vendidos y de mayor margen generado.
-- Clasificación ABC según participación en ventas.
-- Alertas de agotados, bajo mínimo, sin movimiento, exceso y precio menor al costo.
-- Historial de cortes físicos generado por cada importación Excel.
-- Exportación completa a Excel e impresión/PDF.
-- EXISTENCIA_FISICA continúa reemplazando el inventario actual.
-- Los cambios de precio no alteran ventas, costos ni márgenes históricos.
-- Recupera productos desde el catálogo y desde el último corte físico cuando sea necesario.
-- Agrega selector desplegable de productos y diagnóstico visible de la fuente de datos.
-- El filtro inicial muestra todos los productos.
-- Incluye todas las mejoras de V2.1, V2.2 y V2.3.
+Mejoras de esta versión:
+- Las 4 capas JavaScript (V2, V2.1, V2.2, V2.3) se consolidaron en un solo archivo minificado app-bundle.min.js: 1 petición en lugar de 4 y ~31% menos peso (279 KB → 193 KB).
+- Fuentes originales conservadas en /src para mantenimiento futuro (con instrucciones para regenerar el bundle).
+- Incluye todas las optimizaciones de V2.3.2: sincronización con debounce, vaciado al cerrar la app, structuredClone, service worker stale-while-revalidate, scripts defer y activación automática de actualizaciones.
+- Sin cambios funcionales ni de datos. NO requiere SQL adicional.

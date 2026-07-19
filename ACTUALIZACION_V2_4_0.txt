@@ -1,0 +1,18 @@
+VENTAS DE VÍCTOR · V2.4.0 (BUNDLE UNIFICADO)
+
+CAMBIOS:
+1. app-bundle.min.js reemplaza a app-v2.js, app-v2.1.js, app-v2.2.js y app-v2.3.js.
+2. index.html y service-worker.js actualizados a ?v=2.4.0.
+3. Carpeta /src con las fuentes legibles e instrucciones para regenerar el bundle.
+
+PARA ACTUALIZAR:
+1. En el repo Kem111079/Ventas_Victor, ELIMINE app-v2.js, app-v2.1.js, app-v2.2.js y app-v2.3.js de la raíz.
+2. Suba el contenido del ZIP reemplazando lo existente.
+3. Espere la publicación de GitHub Pages y abra la app una vez con conexión.
+
+NO ES NECESARIO EJECUTAR SQL ADICIONAL.
+
+PRUEBA RECOMENDADA:
+- Abra la app: debe cargar igual o más rápido y mostrar todas las pantallas (ventas, abonos, informes, inventario, carga masiva).
+- Registre una venta y verifique sincronización (chip verde).
+- En el navegador, F12 → Red: debe verse app-bundle.min.js en lugar de 4 archivos.

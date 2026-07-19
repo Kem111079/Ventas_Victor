@@ -1,0 +1,13 @@
+FUENTES SIN MINIFICAR (V2.4.0)
+
+app-bundle.min.js se genera concatenando y minificando, EN ESTE ORDEN:
+  app-v2.js + app-v2.1.js + app-v2.2.js + app-v2.3.js
+
+Para modificar la app:
+1. Edite el archivo fuente correspondiente en /src.
+2. Regenere el bundle:
+   cat app-v2.js app-v2.1.js app-v2.2.js app-v2.3.js > bundle.js
+   npx terser bundle.js -c passes=2 -m -o ../app-bundle.min.js
+3. Suba app-bundle.min.js con nueva ?v= en index.html y service-worker.js.
+
+(O pídale a Claude que regenere el bundle con sus cambios.)
