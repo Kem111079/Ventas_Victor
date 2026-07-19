@@ -2,7 +2,7 @@
 (() => {
   'use strict';
 
-  const VV23_VERSION = '2.3.0';
+  const VV23_VERSION = '2.3.1';
   let installed23 = false;
   let baseRenderReports23 = null;
   let baseSetReportTab23 = null;
@@ -46,6 +46,7 @@
   }
 
   function normalizeState23() {
+    state.products = Array.isArray(state.products) ? state.products : [];
     state.inventorySnapshots = Array.isArray(state.inventorySnapshots) ? state.inventorySnapshots : [];
     state.inventorySnapshots.forEach((snapshot) => {
       snapshot.id = snapshot.id || (typeof uid === 'function' ? uid('inv') : `inv-${Date.now()}-${Math.random()}`);
@@ -95,6 +96,7 @@
       .vv23-note{font-size:9px;line-height:1.5;color:var(--muted);margin-top:8px}.vv23-note.warning{background:var(--warning-bg);border:1px solid #ead38c;color:#694c00;border-radius:11px;padding:9px}
       .vv23-history{display:grid;gap:7px}.vv23-history-row{display:grid;grid-template-columns:minmax(115px,1.5fr) repeat(3,minmax(70px,.7fr));gap:8px;align-items:center;border-bottom:1px solid var(--line);padding:8px 2px;font-size:9px}.vv23-history-row:last-child{border-bottom:0}.vv23-history-row b{display:block;font-size:10px}.vv23-history-row span{color:var(--muted);font-size:8px}.vv23-history-row strong{text-align:right}.vv23-abc{display:inline-flex;width:24px;height:24px;border-radius:8px;align-items:center;justify-content:center;font-size:10px;font-weight:950;background:#eef1ef}.vv23-abc.a{background:#dff5e9;color:#067647}.vv23-abc.b{background:#eaf1ff;color:#175cd3}.vv23-abc.c{background:#fff2d8;color:#a15c00}
       .vv23-section-actions{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+      .vv231-diagnostic{margin-top:10px;border:1px solid var(--line);border-radius:12px;padding:9px 10px;background:#f7faf8;font-size:9px;line-height:1.5;color:var(--muted)}.vv231-diagnostic b{color:var(--brand)}.vv231-diagnostic.warning{background:var(--warning-bg);border-color:#ead38c;color:#694c00}
       @media(min-width:720px){.vv23-metrics{grid-template-columns:repeat(4,minmax(0,1fr))}.vv23-filter-grid{grid-template-columns:1.2fr 1fr 1fr 1fr}.vv23-filter-grid .wide{grid-column:auto}.vv23-report-grid.two{grid-template-columns:1fr 1fr}}
       @media(max-width:560px){.vv23-history-row{grid-template-columns:1fr 1fr}.vv23-history-row .vv23-hide-mobile{display:none}.vv23-rank{grid-template-columns:minmax(90px,1fr) .8fr auto}}
     `;
@@ -119,12 +121,14 @@
           <div class="card no-print">
             <div class="card-head"><h2>Inventario y rotación</h2><small>Saldo actual + ventas del período</small></div>
             <div class="vv23-filter-grid">
-              <div class="field wide"><label>Buscar producto o código</label><input id="vv23Search" placeholder="Ej. camisa, PR-001..."></div>
+              <div class="field wide"><label>Producto</label><select id="vv231Product"><option value="">Todos los productos</option></select></div>
+              <div class="field wide"><label>Buscar por nombre o código</label><input id="vv23Search" placeholder="Escriba parte del nombre o código..."></div>
               <div class="field"><label>Categoría</label><select id="vv23Category"><option value="">Todas</option></select></div>
-              <div class="field"><label>Estado del producto</label><select id="vv23CatalogStatus"><option value="active">Activos</option><option value="all">Todos</option><option value="inactive">Inactivos</option></select></div>
+              <div class="field"><label>Estado del producto</label><select id="vv23CatalogStatus"><option value="all">Todos</option><option value="active">Activos</option><option value="inactive">Inactivos</option></select></div>
               <div class="field"><label>Condición de inventario</label><select id="vv23StockStatus"><option value="">Todas</option><option value="out">Agotados</option><option value="restock">Reponer</option><option value="high">Alta rotación</option><option value="normal">Rotación normal</option><option value="low">Baja rotación</option><option value="dead">Sin movimiento</option><option value="excess">Exceso</option></select></div>
             </div>
-            <div class="vv23-note">El período superior se usa para medir unidades vendidas, ingresos, margen y rotación. El inventario corresponde al saldo físico actual sincronizado.</div>
+            <div id="vv231InventoryDiagnostic" class="vv231-diagnostic">Revisando catálogo e inventario sincronizado…</div>
+            <div class="vv23-note">El período superior se usa para medir unidades vendidas, ingresos, margen y rotación. La existencia se toma del catálogo sincronizado y, cuando sea necesario, del último corte físico disponible.</div>
           </div>
 
           <div class="vv23-metrics">
@@ -160,7 +164,7 @@
         </div>`);
     }
 
-    ['vv23Search','vv23Category','vv23CatalogStatus','vv23StockStatus'].forEach((id) => {
+    ['vv231Product','vv23Search','vv23Category','vv23CatalogStatus','vv23StockStatus'].forEach((id) => {
       const element = document.getElementById(id);
       element?.addEventListener(id === 'vv23Search' ? 'input' : 'change', renderInventory23);
     });
@@ -183,11 +187,99 @@
     return norm23(sale.product) === norm23(product.name);
   }
 
+  function productKey23(product) {
+    if (text23(product?.id)) return `id:${text23(product.id)}`;
+    if (text23(product?.code)) return `code:${norm23(product.code)}`;
+    return `name:${norm23(product?.name)}`;
+  }
+
+  function latestSnapshot23() {
+    const list = snapshots23();
+    return list[list.length - 1] || null;
+  }
+
+  function findSnapshotMatch23(items, product) {
+    return (items || []).find((item) =>
+      (text23(item.productId) && text23(product.id) && text23(item.productId) === text23(product.id)) ||
+      (text23(item.code) && text23(product.code) && norm23(item.code) === norm23(product.code)) ||
+      (text23(item.name) && text23(product.name) && norm23(item.name) === norm23(product.name))
+    ) || null;
+  }
+
+  function catalogProducts23() {
+    const catalog = Array.isArray(state.products) ? state.products : [];
+    const snapshot = latestSnapshot23();
+    const snapshotItems = Array.isArray(snapshot?.products) ? snapshot.products : [];
+    const consumed = new Set();
+    const result = [];
+    const seen = new Set();
+
+    catalog.forEach((product) => {
+      const match = findSnapshotMatch23(snapshotItems, product);
+      if (match) consumed.add(match);
+      const hasStock = product.stock !== null && product.stock !== undefined && product.stock !== '';
+      const hasCost = product.cost !== null && product.cost !== undefined && product.cost !== '';
+      const hasPrice = product.price !== null && product.price !== undefined && product.price !== '';
+      const merged = {
+        ...product,
+        id:product.id || match?.productId || '',
+        code:product.code || match?.code || '',
+        name:product.name || match?.name || 'Sin nombre',
+        category:product.category || match?.category || 'Sin categoría',
+        stock:hasStock ? num23(product.stock) : num23(match?.stock),
+        cost:hasCost ? num23(product.cost) : num23(match?.cost),
+        price:hasPrice ? num23(product.price) : num23(match?.price),
+        minStock:num23(product.minStock),
+        active:product.active !== false,
+        _inventorySource:hasStock ? 'catalog' : (match ? 'snapshot' : 'catalog')
+      };
+      const key = productKey23(merged);
+      if (!seen.has(key)) { seen.add(key); result.push(merged); }
+    });
+
+    snapshotItems.forEach((item) => {
+      if (consumed.has(item)) return;
+      const product = {
+        id:item.productId || '', code:item.code || '', name:item.name || 'Sin nombre',
+        category:item.category || 'Sin categoría', stock:num23(item.stock), cost:num23(item.cost),
+        price:num23(item.price), minStock:num23(item.minStock), active:item.active !== false,
+        _inventorySource:'snapshot-only'
+      };
+      const key = productKey23(product);
+      if (!seen.has(key)) { seen.add(key); result.push(product); }
+    });
+    return result;
+  }
+
+  function ensureInitialSnapshot23() {
+    state.inventorySnapshots = Array.isArray(state.inventorySnapshots) ? state.inventorySnapshots : [];
+    if (state.inventorySnapshots.length) return false;
+    const products = (Array.isArray(state.products) ? state.products : []).filter((product) => text23(product.name));
+    if (!products.length) return false;
+    const timestamp = state.settings?.lastCatalogImport?.importedAt || new Date().toISOString();
+    const identity = identity23();
+    const items = products.map((product) => ({
+      productId:product.id || '', code:product.code || '', name:product.name || '', category:product.category || '',
+      stock:num23(product.stock), cost:num23(product.cost), price:num23(product.price), minStock:num23(product.minStock), active:product.active !== false
+    }));
+    state.inventorySnapshots.push({
+      id:typeof uid === 'function' ? uid('inv') : `inv-${Date.now()}`,
+      date:dateKey23(timestamp) || currentDay23(), createdAt:timestamp, updatedAt:timestamp,
+      sourceFile:'Inventario inicial migrado desde V2.2', importedBy:identity.userName || 'Sistema', importedById:identity.userId || '',
+      appVersion:'2.3.1', products:items,
+      totalUnits:items.reduce((sum, item) => sum + Math.max(0, num23(item.stock)), 0),
+      totalCost:items.reduce((sum, item) => sum + Math.max(0, num23(item.stock)) * num23(item.cost), 0),
+      totalSale:items.reduce((sum, item) => sum + Math.max(0, num23(item.stock)) * num23(item.price), 0)
+    });
+    return true;
+  }
+
   function currentFilters23() {
     return {
+      productKey:document.getElementById('vv231Product')?.value || '',
       search:norm23(document.getElementById('vv23Search')?.value || ''),
       category:document.getElementById('vv23Category')?.value || '',
-      catalogStatus:document.getElementById('vv23CatalogStatus')?.value || 'active',
+      catalogStatus:document.getElementById('vv23CatalogStatus')?.value || 'all',
       stockStatus:document.getElementById('vv23StockStatus')?.value || ''
     };
   }
@@ -261,7 +353,8 @@
     const period = reportPeriod23();
     const periodSales = (state.sales || []).filter((sale) => active23(sale) && (!period.from || sale.date >= period.from) && (!period.to || sale.date <= period.to));
     const allSalesToDate = (state.sales || []).filter((sale) => active23(sale) && (!period.to || sale.date <= period.to));
-    const rows = (state.products || []).map((product) => {
+    const products = catalogProducts23();
+    const rows = products.map((product) => {
       const sales = periodSales.filter((sale) => saleMatchesProduct23(sale, product));
       const history = allSalesToDate.filter((sale) => saleMatchesProduct23(sale, product));
       const unitsSold = sales.reduce((sum, sale) => sum + num23(sale.qty), 0);
@@ -293,6 +386,7 @@
     classifyABC23(rows);
     const filters = currentFilters23();
     const filtered = rows.filter((row) => {
+      if (filters.productKey && productKey23(row) !== filters.productKey) return false;
       if (filters.catalogStatus === 'active' && !row.active) return false;
       if (filters.catalogStatus === 'inactive' && row.active) return false;
       if (filters.category && row.category !== filters.category) return false;
@@ -310,6 +404,31 @@
     const categories = [...new Set(rows.map((row) => row.category).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'es'));
     select.innerHTML = `<option value="">Todas</option>${categories.map((category) => `<option value="${html23(category)}">${html23(category)}</option>`).join('')}`;
     if (categories.includes(selected)) select.value = selected;
+  }
+
+  function fillProducts23(rows) {
+    const select = document.getElementById('vv231Product');
+    if (!select) return;
+    const selected = select.value;
+    const ordered = rows.slice().sort((a, b) => a.name.localeCompare(b.name, 'es'));
+    select.innerHTML = `<option value="">Todos los productos</option>${ordered.map((row) => `<option value="${html23(productKey23(row))}">${html23(`${row.code ? `${row.code} · ` : ''}${row.name}`)}</option>`).join('')}`;
+    if (ordered.some((row) => productKey23(row) === selected)) select.value = selected;
+  }
+
+  function renderDiagnostic23(data) {
+    const box = document.getElementById('vv231InventoryDiagnostic');
+    if (!box) return;
+    const catalogCount = Array.isArray(state.products) ? state.products.length : 0;
+    const latest = latestSnapshot23();
+    const snapshotCount = Array.isArray(latest?.products) ? latest.products.length : 0;
+    const withStock = data.allRows.filter((row) => row.stock > 0).length;
+    let source = catalogCount && snapshotCount ? 'catálogo sincronizado y último corte físico' : catalogCount ? 'catálogo sincronizado' : snapshotCount ? 'último corte físico recuperado' : 'sin fuente disponible';
+    box.classList.toggle('warning', data.allRows.length === 0);
+    if (!data.allRows.length) {
+      box.innerHTML = '<b>No se encontraron productos.</b> Verifique que la sesión esté sincronizada y que la carga Excel haya sido confirmada. La app volverá a revisar al recibir datos de Supabase.';
+      return;
+    }
+    box.innerHTML = `<b>${data.allRows.length} productos encontrados</b> · ${withStock} con existencia positiva · Fuente: ${html23(source)}${latest ? ` · Último conteo: ${html23(formatDate23(latest.date || latest.createdAt))}` : ''}.`;
   }
 
   function overallRotation23(data) {
@@ -423,6 +542,8 @@
     if (!pane || !state) return;
     const data = buildInventoryRows23();
     fillCategories23(data.allRows);
+    fillProducts23(data.allRows);
+    renderDiagnostic23(data);
     const totals = totals23(data);
     setText23('vv23Units', Math.round(totals.units).toLocaleString('es-NI'));
     setText23('vv23ProductsCount', `${data.rows.length} producto${data.rows.length === 1 ? '' : 's'}`);
@@ -569,7 +690,7 @@
       vv23ExportInventory:exportInventory23,
       vv23PrintInventory:printInventory23,
       VV23_VERSION,
-      VV23_TEST:{ buildInventoryRows23, totals23, overallRotation23, rotationStatus23 }
+      VV23_TEST:{ buildInventoryRows23, totals23, overallRotation23, rotationStatus23, catalogProducts23, productKey23 }
     });
   }
 
@@ -579,6 +700,7 @@
     try {
       await waitForApp23();
       normalizeState23();
+      const migratedSnapshot23 = ensureInitialSnapshot23();
       installStyles23();
       installUI23();
       wrapReports23();
@@ -589,17 +711,17 @@
         guide.dataset.vv23 = '1';
         guide.innerHTML += '<br><br><b>16. Inventario y rotación:</b> en Informes use la pestaña Inventario para conocer existencias, masa monetaria, productos más vendidos, margen, cobertura y alertas.<br><br><b>17. Conteos físicos:</b> cada importación Excel guarda un corte histórico. Con dos cortes en fechas diferentes la app calcula la rotación usando inventario promedio.';
       }
-      if (typeof save === 'function') await save(false);
+      if (typeof save === 'function' && migratedSnapshot23) await save(false);
       if (typeof refreshAll === 'function') refreshAll();
-      if (typeof toast === 'function') toast('Ventas de Víctor V2.3 · Inventario y rotación listos');
+      if (typeof toast === 'function') toast('Ventas de Víctor V2.3.1 · Inventario recuperado y selector listo');
     } catch (error) {
       console.error('Error al iniciar V2.3', error);
-      alert(`La mejora V2.3 no pudo iniciar: ${error.message || error}`);
+      alert(`La mejora V2.3.1 no pudo iniciar: ${error.message || error}`);
     }
   }
 
   Object.assign(window, {
-    VV23_CALC:{ buildInventoryRows23, totals23, overallRotation23, rotationStatus23, inventorySheets23 }
+    VV23_CALC:{ buildInventoryRows23, totals23, overallRotation23, rotationStatus23, inventorySheets23, catalogProducts23, productKey23 }
   });
   if (!window.VV23_SKIP_BOOT) boot23();
 })();

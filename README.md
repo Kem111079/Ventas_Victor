@@ -1,4 +1,4 @@
-# Ventas de Víctor · PWA Multiusuario V2.3
+# Ventas de Víctor · PWA Multiusuario V2.3.1
 
 Aplicación sencilla para ventas, créditos, abonos, gastos, inventario físico e informes financieros para no financieros.
 

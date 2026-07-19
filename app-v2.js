@@ -2,7 +2,7 @@
 'use strict';
 
 (() => {
-  const VV2_VERSION = '2.3.0';
+  const VV2_VERSION = '2.3.1';
   const STORAGE_CONFIG = 'vv_supabase_override_v2';
   const STORAGE_META = 'vv_cloud_meta_v2';
   const DEVICE_KEY = 'vv_device_id_v2';

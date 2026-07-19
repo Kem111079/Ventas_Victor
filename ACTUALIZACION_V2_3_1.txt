@@ -1,0 +1,12 @@
+ACTUALIZACIÓN V2.3 → V2.3.1
+
+Correcciones principales:
+- El reporte ya no depende únicamente de state.products.
+- Recupera inventario desde el último corte físico cuando el catálogo aún no está disponible o un campo quedó vacío.
+- Mantiene prioridad del catálogo actual para inventario, costo y precio vigentes.
+- Agrega selector desplegable de productos con opción Todos los productos.
+- Conserva búsqueda por nombre o código.
+- El filtro Estado inicia en Todos para evitar ocultar registros.
+- Muestra diagnóstico: productos encontrados, productos con existencia, fuente usada y último conteo.
+- Si no existen cortes históricos pero sí productos, crea un corte inicial migrado desde V2.2.
+- No modifica ventas históricas ni recalcula costos o márgenes anteriores.

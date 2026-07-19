@@ -1,4 +1,4 @@
-VENTAS DE VÍCTOR · V2.3
+VENTAS DE VÍCTOR · V2.3.1
 
 Esta versión incorpora el reporte ejecutivo de inventario, masa monetaria, rotación y productos más vendidos.
 

@@ -1,5 +1,5 @@
 Ventas de Víctor PWA Multiusuario
-Versión 2.3.0 · Inventario, rotación y análisis de ventas
+Versión 2.3.1 · Recuperación de inventario y selector de productos
 Fecha de compilación: 2026-07-18
 Proyecto Supabase: dswrzzkrnizobhvnsxjh
 
@@ -16,4 +16,7 @@ Mejoras principales:
 - Exportación completa a Excel e impresión/PDF.
 - EXISTENCIA_FISICA continúa reemplazando el inventario actual.
 - Los cambios de precio no alteran ventas, costos ni márgenes históricos.
-- Incluye todas las mejoras de V2.1 y V2.2.
+- Recupera productos desde el catálogo y desde el último corte físico cuando sea necesario.
+- Agrega selector desplegable de productos y diagnóstico visible de la fuente de datos.
+- El filtro inicial muestra todos los productos.
+- Incluye todas las mejoras de V2.1, V2.2 y V2.3.
